@@ -43,11 +43,17 @@ class AdminStoreViewSet(viewsets.ModelViewSet):
     queryset = Store.objects.all()
     serializer_class = StoreSerializer
     permission_classes = [IsAdminUser]
+    filterset_fields = ['name', 'address', 'email']
+    search_fields = ['name', 'address', 'email']
+    ordering_fields = ['name', 'email', 'address']
 
 class AdminUserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
     serializer_class = AdminUserSerializer
     permission_classes = [IsAdminUser]
+    filterset_fields = ['name', 'email', 'address', 'role']
+    search_fields = ['name', 'email', 'address']
+    ordering_fields = ['name', 'email', 'role']
 
     def get_queryset(self):
         return User.objects.exclude(id=self.request.user.id)

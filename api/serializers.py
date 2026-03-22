@@ -41,3 +41,14 @@ class SignupSerializer(serializers.ModelSerializer):
             role=User.NORMAL_USER
         )
         return user
+
+class UpdatePasswordSerializer(serializers.Serializer):
+    old_password = serializers.CharField(required=True)
+    new_password = serializers.CharField(required=True, min_length=8, max_length=16)
+
+    def validate_new_password(self, value):
+        if not re.search(r'[A-Z]', value):
+            raise serializers.ValidationError("Password must include at least one uppercase letter.")
+        if not re.search(r'[!@#$%^&*(),.?":{}|<>]', value):
+            raise serializers.ValidationError("Password must include at least one special character.")
+        return value

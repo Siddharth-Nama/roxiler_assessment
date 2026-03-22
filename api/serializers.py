@@ -19,11 +19,19 @@ class UserSerializer(serializers.ModelSerializer):
         fields = ['id', 'username', 'email', 'name', 'address', 'role']
 
 class AdminUserSerializer(serializers.ModelSerializer):
-    password = serializers.CharField(write_only=True, min_length=8, max_length=16)
+    password = serializers.CharField(write_only=True, min_length=8, max_length=16, required=False)
+    store_rating = serializers.SerializerMethodField()
 
     class Meta:
         model = User
-        fields = ['username', 'email', 'name', 'address', 'password', 'role']
+        fields = ['id', 'username', 'email', 'name', 'address', 'password', 'role', 'store_rating']
+
+    def get_store_rating(self, obj):
+        if obj.role == User.STORE_OWNER and hasattr(obj, 'store'):
+            ratings = obj.store.ratings.all()
+            if ratings.exists():
+                return sum(r.value for r in ratings) / ratings.count()
+        return None
 
     def validate_password(self, value):
         if not re.search(r'[A-Z]', value):

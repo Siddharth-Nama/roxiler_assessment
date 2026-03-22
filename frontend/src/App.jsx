@@ -4,6 +4,7 @@ import { AuthContext, AuthProvider } from './context/AuthContext';
 import './index.css';
 import Login from './pages/Login';
 import Signup from './pages/Signup';
+import Navbar from './components/Navbar';
 
 // Placeholder Components (will be implemented in future subtasks)
 const AdminDashboard = () => <div className="animate-fade p-20">Admin Dashboard</div>;
@@ -22,6 +23,7 @@ function App() {
     return (
         <AuthProvider>
             <Router>
+                <Navbar />
                 <Routes>
                     <Route path="/login" element={<Login />} />
                     <Route path="/signup" element={<Signup />} />

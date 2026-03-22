@@ -5,9 +5,9 @@ import './index.css';
 import Login from './pages/Login';
 import Signup from './pages/Signup';
 import Navbar from './components/Navbar';
+import AdminDashboard from './pages/AdminDashboard';
 
 // Placeholder Components (will be implemented in future subtasks)
-const AdminDashboard = () => <div className="animate-fade p-20">Admin Dashboard</div>;
 const UserDashboard = () => <div className="animate-fade p-20">User Dashboard</div>;
 const StoreOwnerDashboard = () => <div className="animate-fade p-20">Store Owner Dashboard</div>;
 

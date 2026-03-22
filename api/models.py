@@ -30,3 +30,12 @@ class User(AbstractUser):
 
     def __str__(self):
         return self.email
+
+class Store(models.Model):
+    name = models.CharField(max_length=255)
+    address = models.TextField(max_length=400, validators=[MaxLengthValidator(400)])
+    email = models.EmailField()
+    owner = models.OneToOneField(User, on_delete=models.CASCADE, limit_choices_to={'role': User.STORE_OWNER}, related_name='store')
+
+    def __str__(self):
+        return self.name

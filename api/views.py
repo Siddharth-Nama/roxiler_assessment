@@ -2,8 +2,11 @@ from rest_framework import generics, status, viewsets, permissions
 from rest_framework.response import Response
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework_simplejwt.views import TokenObtainPairView
-from .serializers import MyTokenObtainPairSerializer, SignupSerializer, UpdatePasswordSerializer, StoreSerializer
+from .serializers import MyTokenObtainPairSerializer, SignupSerializer, UpdatePasswordSerializer, StoreSerializer, AdminUserSerializer
 from .models import Store
+from django.contrib.auth import get_user_model
+
+User = get_user_model()
 
 class MyTokenObtainPairView(TokenObtainPairView):
     serializer_class = MyTokenObtainPairSerializer
@@ -40,3 +43,11 @@ class AdminStoreViewSet(viewsets.ModelViewSet):
     queryset = Store.objects.all()
     serializer_class = StoreSerializer
     permission_classes = [IsAdminUser]
+
+class AdminUserViewSet(viewsets.ModelViewSet):
+    queryset = User.objects.all()
+    serializer_class = AdminUserSerializer
+    permission_classes = [IsAdminUser]
+
+    def get_queryset(self):
+        return User.objects.exclude(id=self.request.user.id)

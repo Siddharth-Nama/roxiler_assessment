@@ -18,6 +18,24 @@ class UserSerializer(serializers.ModelSerializer):
         model = User
         fields = ['id', 'username', 'email', 'name', 'address', 'role']
 
+class AdminUserSerializer(serializers.ModelSerializer):
+    password = serializers.CharField(write_only=True, min_length=8, max_length=16)
+
+    class Meta:
+        model = User
+        fields = ['username', 'email', 'name', 'address', 'password', 'role']
+
+    def validate_password(self, value):
+        if not re.search(r'[A-Z]', value):
+            raise serializers.ValidationError("Password must include at least one uppercase letter.")
+        if not re.search(r'[!@#$%^&*(),.?":{}|<>]', value):
+            raise serializers.ValidationError("Password must include at least one special character.")
+        return value
+
+    def create(self, validated_data):
+        user = User.objects.create_user(**validated_data)
+        return user
+
 class SignupSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True, min_length=8, max_length=16)
 

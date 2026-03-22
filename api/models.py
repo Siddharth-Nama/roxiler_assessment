@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
+from django.core.validators import MinLengthValidator, MaxLengthValidator
 
 class User(AbstractUser):
     SYSTEM_ADMIN = 'Admin'
@@ -12,11 +13,16 @@ class User(AbstractUser):
         (STORE_OWNER, 'Store Owner'),
     ]
     
-    name = models.CharField(max_length=60)
-    address = models.TextField(max_length=400)
+    name = models.CharField(
+        max_length=60,
+        validators=[MinLengthValidator(20), MaxLengthValidator(60)]
+    )
+    address = models.TextField(
+        max_length=400,
+        validators=[MaxLengthValidator(400)]
+    )
     role = models.CharField(max_length=20, choices=ROLE_CHOICES, default=NORMAL_USER)
     
-    # Email will be used for login, so we make it unique
     email = models.EmailField(unique=True)
     
     USERNAME_FIELD = 'email'

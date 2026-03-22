@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import api from '../api/axios';
-import { Users, Store, Star, Search, Filter } from 'lucide-react';
-import { motion } from 'framer-motion';
+import { Users, Store, Star, Search, Filter, Plus, X } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
 
 const AdminDashboard = () => {
     const [stats, setStats] = useState({ total_users: 0, total_stores: 0, total_ratings: 0 });
@@ -10,6 +10,11 @@ const AdminDashboard = () => {
     const [loading, setLoading] = useState(true);
     const [search, setSearch] = useState('');
     const [roleFilter, setRoleFilter] = useState('');
+    const [showModal, setShowModal] = useState(false);
+    const [formData, setFormData] = useState({ 
+        username: '', email: '', password: '', name: '', address: '', role: 'User' 
+    });
+    const [error, setError] = useState('');
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -29,6 +34,18 @@ const AdminDashboard = () => {
             console.error("Failed to fetch dashboard data", error);
         } finally {
             setLoading(false);
+        }
+    };
+
+    const handleAddUser = async (e) => {
+        e.preventDefault();
+        try {
+            await api.post('admin/users/', formData);
+            setShowModal(false);
+            setFormData({ username: '', email: '', password: '', name: '', address: '', role: 'User' });
+            fetchData();
+        } catch (err) {
+            setError(err.response?.data?.message || 'Failed to create user');
         }
     };
 
@@ -59,10 +76,17 @@ const AdminDashboard = () => {
                 ))}
             </div>
 
-            {/* Users Table */}
             <div className="glass p-6">
                 <div className="flex flex-col md:flex-row items-center justify-between gap-4 mb-6">
-                    <h3 className="text-xl font-bold">User Management</h3>
+                    <div className="flex items-center gap-4">
+                        <h3 className="text-xl font-bold">User Management</h3>
+                        <button 
+                            onClick={() => setShowModal(true)}
+                            className="btn-primary py-1 px-3 text-xs flex items-center gap-1"
+                        >
+                            <Plus size={14} /> Add User
+                        </button>
+                    </div>
                     <div className="flex items-center gap-3 w-full md:w-auto">
                         <div className="relative flex-1 md:w-64">
                             <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-text-muted" size={18} />
@@ -124,6 +148,66 @@ const AdminDashboard = () => {
                     )}
                 </div>
             </div>
+
+            <AnimatePresence>
+                {showModal && (
+                    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
+                        <motion.div 
+                            initial={{ scale: 0.9, opacity: 0 }}
+                            animate={{ scale: 1, opacity: 1 }}
+                            exit={{ scale: 0.9, opacity: 0 }}
+                            className="glass p-8 w-full max-w-md relative"
+                        >
+                            <button 
+                                onClick={() => setShowModal(false)}
+                                className="absolute top-4 right-4 text-text-muted hover:text-white"
+                            >
+                                <X size={24} />
+                            </button>
+                            <h2 className="text-2xl font-bold mb-6">Add New User</h2>
+                            <form onSubmit={handleAddUser} className="flex flex-col gap-4">
+                                <input 
+                                    placeholder="Username" 
+                                    required 
+                                    onChange={(e) => setFormData({...formData, username: e.target.value})}
+                                />
+                                <input 
+                                    type="email" 
+                                    placeholder="Email" 
+                                    required 
+                                    onChange={(e) => setFormData({...formData, email: e.target.value})}
+                                />
+                                <input 
+                                    type="password" 
+                                    placeholder="Password" 
+                                    required 
+                                    onChange={(e) => setFormData({...formData, password: e.target.value})}
+                                />
+                                <input 
+                                    placeholder="Full Name (Min 20 chars)" 
+                                    required 
+                                    onChange={(e) => setFormData({...formData, name: e.target.value})}
+                                />
+                                <textarea 
+                                    placeholder="Address" 
+                                    required 
+                                    onChange={(e) => setFormData({...formData, address: e.target.value})}
+                                />
+                                <select 
+                                    value={formData.role}
+                                    onChange={(e) => setFormData({...formData, role: e.target.value})}
+                                >
+                                    <option value="User">Normal User</option>
+                                    <option value="Admin">Admin</option>
+                                    <option value="StoreOwner">Store Owner</option>
+                                </select>
+                                {error && <p className="text-red-400 text-sm">{error}</p>}
+                                <button type="submit" className="btn-primary mt-4">Create User</button>
+                            </form>
+                        </motion.div>
+                    </div>
+                )}
+            </AnimatePresence>
         </div>
     );
 };

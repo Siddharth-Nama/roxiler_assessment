@@ -1,6 +1,7 @@
 from rest_framework import serializers
 import re
 from django.contrib.auth import get_user_model
+from .models import Store, Rating
 
 User = get_user_model()
 
@@ -41,6 +42,19 @@ class SignupSerializer(serializers.ModelSerializer):
             role=User.NORMAL_USER
         )
         return user
+
+class StoreSerializer(serializers.ModelSerializer):
+    overall_rating = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Store
+        fields = ['id', 'name', 'address', 'email', 'owner', 'overall_rating']
+
+    def get_overall_rating(self, obj):
+        ratings = obj.ratings.all()
+        if ratings.exists():
+            return sum(r.value for r in ratings) / ratings.count()
+        return 0
 
 class UpdatePasswordSerializer(serializers.Serializer):
     old_password = serializers.CharField(required=True)

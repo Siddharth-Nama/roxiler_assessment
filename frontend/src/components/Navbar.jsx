@@ -60,6 +60,13 @@ const Navbar = () => {
                     <span className="text-sm font-medium flex items-center gap-1">
                         <User size={16} className="text-accent" /> {user.name}
                     </span>
+                    <Link 
+                        to="/update-password" 
+                        className="p-2 rounded-lg hover:bg-white/10 text-text-muted transition-all"
+                        title="Update Password"
+                    >
+                        <KeyRound size={20} />
+                    </Link>
                     <button 
                         onClick={handleLogout}
                         className="p-2 rounded-lg hover:bg-red-500/20 text-red-400 transition-all"

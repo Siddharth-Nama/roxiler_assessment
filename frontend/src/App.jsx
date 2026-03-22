@@ -10,6 +10,7 @@ import AdminStores from './pages/AdminStores';
 import UserDetail from './pages/UserDetail';
 import UserStores from './pages/UserStores';
 import StoreOwnerDashboard from './pages/StoreOwnerDashboard';
+import UpdatePassword from './pages/UpdatePassword';
 
 // Placeholder Components (will be implemented in future subtasks)
 
@@ -55,6 +56,12 @@ function App() {
                     <Route path="/store" element={
                         <ProtectedRoute allowedRoles={['StoreOwner']}>
                             <StoreOwnerDashboard />
+                        </ProtectedRoute>
+                    } />
+                    
+                    <Route path="/update-password" element={
+                        <ProtectedRoute>
+                            <UpdatePassword />
                         </ProtectedRoute>
                     } />
                     

@@ -9,9 +9,9 @@ import AdminDashboard from './pages/AdminDashboard';
 import AdminStores from './pages/AdminStores';
 import UserDetail from './pages/UserDetail';
 import UserStores from './pages/UserStores';
+import StoreOwnerDashboard from './pages/StoreOwnerDashboard';
 
 // Placeholder Components (will be implemented in future subtasks)
-const StoreOwnerDashboard = () => <div className="animate-fade p-20">Store Owner Dashboard</div>;
 
 const ProtectedRoute = ({ children, allowedRoles }) => {
     const { user, loading } = useContext(AuthContext);
@@ -52,7 +52,7 @@ function App() {
                         </ProtectedRoute>
                     } />
                     
-                    <Route path="/store/*" element={
+                    <Route path="/store" element={
                         <ProtectedRoute allowedRoles={['StoreOwner']}>
                             <StoreOwnerDashboard />
                         </ProtectedRoute>

@@ -3,8 +3,9 @@ from rest_framework.response import Response
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework_simplejwt.views import TokenObtainPairView
 from .serializers import MyTokenObtainPairSerializer, SignupSerializer, UpdatePasswordSerializer, StoreSerializer, AdminUserSerializer
-from .models import Store
+from .models import Store, Rating
 from django.contrib.auth import get_user_model
+from rest_framework.views import APIView
 
 User = get_user_model()
 
@@ -57,3 +58,14 @@ class AdminUserViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         return User.objects.exclude(id=self.request.user.id)
+
+class AdminDashboardStatsView(APIView):
+    permission_classes = [IsAdminUser]
+
+    def get(self, request):
+        stats = {
+            "total_users": User.objects.count(),
+            "total_stores": Store.objects.count(),
+            "total_ratings": Rating.objects.count()
+        }
+        return Response(stats, status=status.HTTP_200_OK)

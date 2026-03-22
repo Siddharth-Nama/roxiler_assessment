@@ -1,7 +1,7 @@
 import { useContext } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
-import { LogOut, Store, Users, LayoutDashboard, User } from 'lucide-react';
+import { LogOut, Store, Users, LayoutDashboard, User, KeyRound } from 'lucide-react';
 
 const Navbar = () => {
     const { user, logout } = useContext(AuthContext);

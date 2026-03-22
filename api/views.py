@@ -62,6 +62,14 @@ class AdminUserViewSet(viewsets.ModelViewSet):
 class AdminDashboardStatsView(APIView):
     permission_classes = [IsAdminUser]
 
+    def get(self, request):
+        stats = {
+            "total_users": User.objects.count(),
+            "total_stores": Store.objects.count(),
+            "total_ratings": Rating.objects.count()
+        }
+        return Response(stats, status=status.HTTP_200_OK)
+
 class UserStoreViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Store.objects.all()
     serializer_class = UserStoreSerializer
@@ -102,11 +110,3 @@ class StoreOwnerDashboardView(APIView):
             "average_rating": avg_rating,
             "reviews": serializer.data
         }, status=status.HTTP_200_OK)
-
-    def get(self, request):
-        stats = {
-            "total_users": User.objects.count(),
-            "total_stores": Store.objects.count(),
-            "total_ratings": Rating.objects.count()
-        }
-        return Response(stats, status=status.HTTP_200_OK)

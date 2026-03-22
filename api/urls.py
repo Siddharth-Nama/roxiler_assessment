@@ -1,6 +1,10 @@
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
-from .views import MyTokenObtainPairView, SignupView, UpdatePasswordView, AdminStoreViewSet
+from .views import (
+    MyTokenObtainPairView, SignupView, UpdatePasswordView,
+    AdminStoreViewSet, AdminUserViewSet, UserStoreViewSet, RatingViewSet,
+    AdminDashboardStatsView, StoreOwnerDashboardView
+)
 from rest_framework_simplejwt.views import TokenRefreshView
 
 router = DefaultRouter()

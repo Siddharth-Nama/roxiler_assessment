@@ -2,7 +2,7 @@ from rest_framework import generics, status, viewsets, permissions
 from rest_framework.response import Response
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework_simplejwt.views import TokenObtainPairView
-from .serializers import MyTokenObtainPairSerializer, SignupSerializer, UpdatePasswordSerializer, StoreSerializer, AdminUserSerializer, UserStoreSerializer
+from .serializers import MyTokenObtainPairSerializer, SignupSerializer, UpdatePasswordSerializer, StoreSerializer, AdminUserSerializer, UserStoreSerializer, RatingSerializer
 from .models import Store, Rating
 from django.contrib.auth import get_user_model
 from rest_framework.views import APIView
@@ -69,6 +69,17 @@ class UserStoreViewSet(viewsets.ReadOnlyModelViewSet):
     filterset_fields = ['name', 'address']
     search_fields = ['name', 'address']
     ordering_fields = ['name', 'address']
+
+class RatingViewSet(viewsets.ModelViewSet):
+    queryset = Rating.objects.all()
+    serializer_class = RatingSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        return Rating.objects.filter(user=self.request.user)
+
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
 
     def get(self, request):
         stats = {

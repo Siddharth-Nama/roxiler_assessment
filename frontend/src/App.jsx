@@ -2,10 +2,10 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import { useContext } from 'react';
 import { AuthContext, AuthProvider } from './context/AuthContext';
 import './index.css';
+import Login from './pages/Login';
+import Signup from './pages/Signup';
 
 // Placeholder Components (will be implemented in future subtasks)
-const Login = () => <div className="animate-fade p-20">Login Page</div>;
-const Signup = () => <div className="animate-fade p-20">Signup Page</div>;
 const AdminDashboard = () => <div className="animate-fade p-20">Admin Dashboard</div>;
 const UserDashboard = () => <div className="animate-fade p-20">User Dashboard</div>;
 const StoreOwnerDashboard = () => <div className="animate-fade p-20">Store Owner Dashboard</div>;

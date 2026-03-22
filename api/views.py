@@ -2,7 +2,7 @@ from rest_framework import generics, status, viewsets, permissions
 from rest_framework.response import Response
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework_simplejwt.views import TokenObtainPairView
-from .serializers import MyTokenObtainPairSerializer, SignupSerializer, UpdatePasswordSerializer, StoreSerializer, AdminUserSerializer
+from .serializers import MyTokenObtainPairSerializer, SignupSerializer, UpdatePasswordSerializer, StoreSerializer, AdminUserSerializer, UserStoreSerializer
 from .models import Store, Rating
 from django.contrib.auth import get_user_model
 from rest_framework.views import APIView
@@ -61,6 +61,14 @@ class AdminUserViewSet(viewsets.ModelViewSet):
 
 class AdminDashboardStatsView(APIView):
     permission_classes = [IsAdminUser]
+
+class UserStoreViewSet(viewsets.ReadOnlyModelViewSet):
+    queryset = Store.objects.all()
+    serializer_class = UserStoreSerializer
+    permission_classes = [IsAuthenticated]
+    filterset_fields = ['name', 'address']
+    search_fields = ['name', 'address']
+    ordering_fields = ['name', 'address']
 
     def get(self, request):
         stats = {

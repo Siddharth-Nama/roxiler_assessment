@@ -76,11 +76,28 @@ class StoreSerializer(serializers.ModelSerializer):
         model = Store
         fields = ['id', 'name', 'address', 'email', 'owner', 'overall_rating']
 
+        return 0
+
+class UserStoreSerializer(serializers.ModelSerializer):
+    overall_rating = serializers.SerializerMethodField()
+    user_rating = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Store
+        fields = ['id', 'name', 'address', 'overall_rating', 'user_rating']
+
     def get_overall_rating(self, obj):
         ratings = obj.ratings.all()
         if ratings.exists():
             return sum(r.value for r in ratings) / ratings.count()
         return 0
+
+    def get_user_rating(self, obj):
+        user = self.context.get('request').user
+        rating = obj.ratings.filter(user=user).first()
+        if rating:
+            return rating.value
+        return None
 
 class UpdatePasswordSerializer(serializers.Serializer):
     old_password = serializers.CharField(required=True)

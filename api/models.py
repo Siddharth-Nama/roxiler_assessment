@@ -1,6 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
-from django.core.validators import MinLengthValidator, MaxLengthValidator
+from django.core.validators import MinLengthValidator, MaxLengthValidator, MinValueValidator, MaxValueValidator
 
 class User(AbstractUser):
     SYSTEM_ADMIN = 'Admin'
@@ -39,3 +39,14 @@ class Store(models.Model):
 
     def __str__(self):
         return self.name
+
+class Rating(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, limit_choices_to={'role': User.NORMAL_USER}, related_name='ratings')
+    store = models.ForeignKey(Store, on_delete=models.CASCADE, related_name='ratings')
+    value = models.IntegerField(validators=[MinValueValidator(1), MaxValueValidator(5)])
+    
+    class Meta:
+        unique_together = ('user', 'store')
+
+    def __str__(self):
+        return f"{self.user.email} - {self.store.name}: {self.value}"

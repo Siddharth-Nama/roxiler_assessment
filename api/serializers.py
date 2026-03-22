@@ -93,6 +93,14 @@ class RatingSerializer(serializers.ModelSerializer):
         )
         return rating
 
+class RatingDetailSerializer(serializers.ModelSerializer):
+    user_name = serializers.CharField(source='user.name', read_only=True)
+    user_email = serializers.EmailField(source='user.email', read_only=True)
+
+    class Meta:
+        model = Rating
+        fields = ['id', 'user_name', 'user_email', 'value']
+
 class StoreSerializer(serializers.ModelSerializer):
     overall_rating = serializers.SerializerMethodField()
 

@@ -12,6 +12,7 @@ router.register(r'ratings', RatingViewSet, basename='ratings')
 urlpatterns = [
     path('', include(router.urls)),
     path('admin/dashboard-stats/', AdminDashboardStatsView.as_view(), name='admin_dashboard_stats'),
+    path('store-owner/dashboard/', StoreOwnerDashboardView.as_view(), name='store_owner_dashboard'),
     path('login/', MyTokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('login/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     path('signup/', SignupView.as_view(), name='signup'),

@@ -2,7 +2,7 @@ from rest_framework import generics, status, viewsets, permissions
 from rest_framework.response import Response
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework_simplejwt.views import TokenObtainPairView
-from .serializers import MyTokenObtainPairSerializer, SignupSerializer, UpdatePasswordSerializer, StoreSerializer, AdminUserSerializer, UserStoreSerializer, RatingSerializer
+from .serializers import MyTokenObtainPairSerializer, SignupSerializer, UpdatePasswordSerializer, StoreSerializer, AdminUserSerializer, UserStoreSerializer, RatingSerializer, RatingDetailSerializer
 from .models import Store, Rating
 from django.contrib.auth import get_user_model
 from rest_framework.views import APIView
@@ -80,6 +80,28 @@ class RatingViewSet(viewsets.ModelViewSet):
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
+
+class IsStoreOwner(permissions.BasePermission):
+    def has_permission(self, request, view):
+        return request.user and request.user.is_authenticated and request.user.role == 'StoreOwner'
+
+class StoreOwnerDashboardView(APIView):
+    permission_classes = [IsStoreOwner]
+
+    def get(self, request):
+        store = getattr(request.user, 'store', None)
+        if not store:
+            return Response({"error": "No store associated with this user."}, status=status.HTTP_404_NOT_FOUND)
+        
+        ratings = store.ratings.all()
+        avg_rating = sum(r.value for r in ratings) / ratings.count() if ratings.exists() else 0
+        
+        serializer = RatingDetailSerializer(ratings, many=True)
+        
+        return Response({
+            "average_rating": avg_rating,
+            "reviews": serializer.data
+        }, status=status.HTTP_200_OK)
 
     def get(self, request):
         stats = {

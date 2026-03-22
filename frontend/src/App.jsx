@@ -8,9 +8,9 @@ import Navbar from './components/Navbar';
 import AdminDashboard from './pages/AdminDashboard';
 import AdminStores from './pages/AdminStores';
 import UserDetail from './pages/UserDetail';
+import UserStores from './pages/UserStores';
 
 // Placeholder Components (will be implemented in future subtasks)
-const UserDashboard = () => <div className="animate-fade p-20">User Dashboard</div>;
 const StoreOwnerDashboard = () => <div className="animate-fade p-20">Store Owner Dashboard</div>;
 
 const ProtectedRoute = ({ children, allowedRoles }) => {
@@ -46,9 +46,9 @@ function App() {
                         </ProtectedRoute>
                     } />
                     
-                    <Route path="/user/*" element={
+                    <Route path="/user" element={
                         <ProtectedRoute allowedRoles={['User']}>
-                            <UserDashboard />
+                            <UserStores />
                         </ProtectedRoute>
                     } />
                     

@@ -6,6 +6,8 @@ import Login from './pages/Login';
 import Signup from './pages/Signup';
 import Navbar from './components/Navbar';
 import AdminDashboard from './pages/AdminDashboard';
+import AdminStores from './pages/AdminStores';
+import UserDetail from './pages/UserDetail';
 
 // Placeholder Components (will be implemented in future subtasks)
 const UserDashboard = () => <div className="animate-fade p-20">User Dashboard</div>;
@@ -28,9 +30,19 @@ function App() {
                     <Route path="/login" element={<Login />} />
                     <Route path="/signup" element={<Signup />} />
                     
-                    <Route path="/admin/*" element={
+                    <Route path="/admin" element={
                         <ProtectedRoute allowedRoles={['Admin']}>
                             <AdminDashboard />
+                        </ProtectedRoute>
+                    } />
+                    <Route path="/admin/stores" element={
+                        <ProtectedRoute allowedRoles={['Admin']}>
+                            <AdminStores />
+                        </ProtectedRoute>
+                    } />
+                    <Route path="/admin/users/:id" element={
+                        <ProtectedRoute allowedRoles={['Admin']}>
+                            <UserDetail />
                         </ProtectedRoute>
                     } />
                     

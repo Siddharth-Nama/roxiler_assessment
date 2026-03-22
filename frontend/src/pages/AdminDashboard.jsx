@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import api from '../api/axios';
 import { Users, Store, Star, Search, Filter } from 'lucide-react';
 import { motion } from 'framer-motion';
@@ -9,6 +10,7 @@ const AdminDashboard = () => {
     const [loading, setLoading] = useState(true);
     const [search, setSearch] = useState('');
     const [roleFilter, setRoleFilter] = useState('');
+    const navigate = useNavigate();
 
     useEffect(() => {
         fetchData();
@@ -96,7 +98,11 @@ const AdminDashboard = () => {
                         </thead>
                         <tbody>
                             {users.map((u) => (
-                                <tr key={u.id} className="hover:bg-white/5 transition-colors">
+                                <tr 
+                                    key={u.id} 
+                                    className="hover:bg-white/5 transition-colors cursor-pointer"
+                                    onClick={() => navigate(`/admin/users/${u.id}`)}
+                                >
                                     <td className="px-4 py-4">{u.name}</td>
                                     <td className="px-4 py-4">{u.email}</td>
                                     <td className="px-4 py-4 text-sm truncate max-w-[200px]">{u.address}</td>

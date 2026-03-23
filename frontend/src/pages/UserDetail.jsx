@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import api from '../api/axios';
-import { Star, ArrowLeft, Mail, MapPin, User as UserIcon } from 'lucide-react';
+import { Star, ArrowLeft, Mail, MapPin, User as UserIcon, Shield, Zap, Globe, Cpu, Activity } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 const UserDetail = () => {
@@ -25,64 +25,125 @@ const UserDetail = () => {
         }
     };
 
-    if (loading) return <div className="p-20 text-center">Loading...</div>;
-    if (!user) return <div className="p-20 text-center">User not found</div>;
+    if (loading) return (
+        <div className="min-h-[60vh] flex items-center justify-center">
+            <div className="w-16 h-16 border-4 border-primary/20 border-t-primary rounded-full animate-spin"></div>
+        </div>
+    );
+
+    if (!user) return (
+        <div className="min-h-[60vh] flex flex-col items-center justify-center gap-6 opacity-20">
+            <Shield size={64} />
+            <p className="text-2xl font-black uppercase tracking-widest">Entity Not Identified</p>
+        </div>
+    );
 
     return (
-        <div className="p-4 animate-fade">
-            <button 
+        <div className="max-layout py-24 sm:py-32 animate-fade">
+            <motion.button 
+                whileHover={{ x: -10 }}
                 onClick={() => navigate(-1)}
-                className="flex items-center gap-2 text-text-muted hover:text-white mb-8 transition-colors"
+                className="flex items-center gap-4 text-[10px] font-black uppercase tracking-[0.5em] text-red-500/40 hover:text-red-500 transition-all w-fit group mb-10"
             >
-                <ArrowLeft size={20} /> Back to Dashboard
-            </button>
+                <ArrowLeft size={16} className="group-hover:-translate-x-2 transition-transform" /> Return to Registry
+            </motion.button>
 
             <motion.div 
-                initial={{ opacity: 0, y: 20 }}
+                initial={{ opacity: 0, y: 30 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="glass p-8 max-w-4xl mx-auto"
+                className="glass p-12 relative overflow-hidden border-white/5"
             >
-                <div className="flex flex-col md:flex-row gap-8 items-center md:items-start text-center md:text-left">
-                    <div className="p-6 rounded-3xl bg-gradient-to-br from-primary to-accent shadow-xl">
-                        <UserIcon size={64} className="text-white" />
-                    </div>
-                    <div className="flex-1">
-                        <h1 className="text-4xl font-bold mb-2">{user.name}</h1>
-                        <span className={`px-3 py-1 rounded-full text-sm font-semibold mb-6 inline-block ${
-                            user.role === 'Admin' ? 'bg-blue-500/20 text-blue-400 border border-blue-500/30' :
-                            user.role === 'StoreOwner' ? 'bg-purple-500/20 text-purple-400 border border-purple-500/30' :
-                            'bg-green-500/20 text-green-400 border border-green-500/30'
-                        }`}>
-                            {user.role}
-                        </span>
+                <div className="absolute right-0 top-0 p-20 opacity-5 -rotate-12 translate-x-1/4 -translate-y-1/4">
+                    <Shield size={400} />
+                </div>
 
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8">
-                            <div className="flex items-center gap-3 text-text-muted">
-                                <Mail className="text-primary" size={20} />
-                                <span>{user.email}</span>
+                <div className="flex flex-col lg:flex-row gap-12 items-center lg:items-start relative z-10">
+                    <div className="relative group">
+                        <div className="absolute inset-0 bg-gradient-to-br from-red-500 to-red-800 rounded-[2.5rem] blur-2xl opacity-20 group-hover:opacity-40 transition-opacity"></div>
+                        <div className="p-10 rounded-[2.5rem] bg-gradient-to-br from-red-600 via-red-500 to-rose-700 shadow-2xl relative border border-white/10 group-hover:rotate-3 transition-transform duration-500">
+                            <UserIcon size={80} className="text-white" />
+                        </div>
+                        <div className="absolute -bottom-2 -right-2 p-3 bg-black/80 rounded-2xl border border-white/10 backdrop-blur-xl">
+                            <Cpu size={20} className="text-red-500" />
+                        </div>
+                    </div>
+
+                    <div className="flex-1 flex flex-col items-center lg:items-start text-center lg:text-left">
+                        <div className="flex flex-col gap-3 mb-8">
+                            <h1 className="text-6xl sm:text-7xl font-black tracking-[-0.05em] text-white italic uppercase font-display leading-none flex items-center gap-4">
+                                <Star className="text-red-500 animate-pulse" size={32} fill="currentColor" />
+                                {user.name}
+                                <Star className="text-red-500 animate-pulse" size={32} fill="currentColor" />
+                            </h1>
+                            <div className="flex items-center justify-center lg:justify-start gap-5 mt-4">
+                                <span className={`px-6 py-2 rounded-full text-[9px] font-black uppercase tracking-[0.3em] border shadow-2xl backdrop-blur-md ${
+                                    user.role === 'Admin' ? 'bg-red-500/10 text-red-500 border-red-500/20 shadow-[0_0_20px_rgba(239,68,68,0.3)]' :
+                                    user.role === 'StoreOwner' ? 'bg-red-600/10 text-red-400 border-red-600/20 shadow-[0_0_20px_rgba(225,29,72,0.3)]' :
+                                    'bg-emerald-500/10 text-emerald-400 border-emerald-500/20 shadow-[0_0_20px_rgba(16,185,129,0.3)]'
+                                }`}>
+                                    {user.role} Authorization
+                                </span>
+                                <span className="text-[10px] font-black text-text-muted/40 tracking-[0.4em] uppercase italic">REF // 00{user.id}</span>
                             </div>
-                            <div className="flex items-center gap-3 text-text-muted">
-                                <MapPin className="text-primary" size={20} />
-                                <span>{user.address}</span>
+                        </div>
+
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 w-full mt-6">
+                            <div className="glass p-6 flex flex-col gap-3 group border-white/5 ring-1 ring-white/5">
+                                <div className="flex items-center gap-3">
+                                    <Mail className="text-primary" size={18} />
+                                    <span className="text-[10px] font-black uppercase tracking-widest text-text-muted">Communication Channel</span>
+                                </div>
+                                <span className="text-lg font-medium italic text-white group-hover:text-primary transition-colors">{user.email}</span>
+                            </div>
+                            <div className="glass p-6 flex flex-col gap-3 group border-white/5 ring-1 ring-white/5">
+                                <div className="flex items-center gap-3">
+                                    <MapPin className="text-primary" size={18} />
+                                    <span className="text-[10px] font-black uppercase tracking-widest text-text-muted">Geographic Coordinate</span>
+                                </div>
+                                <span className="text-lg font-medium text-white group-hover:text-primary transition-colors leading-snug">"{user.address}"</span>
                             </div>
                         </div>
 
                         {user.role === 'StoreOwner' && (
-                            <div className="mt-12 p-6 rounded-2xl bg-white/5 border border-glass-border">
-                                <h3 className="text-xl font-bold mb-4 flex items-center gap-2">
-                                    <Star className="text-yellow-400" size={24} fill="currentColor" />
-                                    Store Performance
-                                </h3>
-                                <div className="flex items-end gap-2">
-                                    <span className="text-5xl font-black text-white">
-                                        {user.store_rating ? user.store_rating.toFixed(1) : 'No Ratings'}
-                                    </span>
-                                    <span className="text-text-muted mb-2 font-medium">/ 5.0 Average Rating</span>
+                            <motion.div 
+                                initial={{ opacity: 0, scale: 0.95, y: 30 }}
+                                animate={{ opacity: 1, scale: 1, y: 0 }}
+                                transition={{ delay: 0.2, type: 'spring', bounce: 0.3 }}
+                                className="mt-16 w-full p-12 rounded-[3rem] bg-black/40 border border-white/5 shadow-inner relative overflow-hidden group"
+                            >
+                                <div className="absolute right-0 bottom-0 p-12 opacity-5 rotate-12 group-hover:rotate-0 transition-transform duration-1000">
+                                    <Zap size={160} className="text-amber-500" />
                                 </div>
-                                <p className="text-sm text-text-muted mt-4">
-                                    This is the overall average rating calculated from all user reviews for this owner's registered store.
-                                </p>
-                            </div>
+                                <h3 className="text-[9px] font-black uppercase tracking-[0.5em] text-red-500/40 mb-10 flex items-center gap-4 italic px-2">
+                                    <Activity size={18} className="animate-pulse" /> Operational performance metrics
+                                </h3>
+                                <div className="flex flex-col xl:flex-row items-center gap-12 relative z-10">
+                                    <div className="flex items-end gap-5 bg-black/60 p-12 rounded-[2.5rem] border border-white/10 shadow-2xl backdrop-blur-md group-hover:border-red-500/30 transition-colors">
+                                        <span className="text-8xl font-black text-white tracking-tighter italic font-display leading-none">
+                                            {user.store_rating ? user.store_rating.toFixed(1) : '0.0'}
+                                        </span>
+                                        <div className="flex flex-col mb-3">
+                                            <Star size={32} className="text-amber-500 mb-2" fill="currentColor" />
+                                            <span className="text-[9px] font-black text-text-muted/40 uppercase tracking-[0.3em]">Avg. Score</span>
+                                        </div>
+                                    </div>
+                                    <div className="flex-1 text-center xl:text-left">
+                                        <p className="text-xl font-medium leading-relaxed italic text-text-muted/70">
+                                            Aggregated satisfaction index derived from recursive consumer diagnostics. Current telemetry indicates a highly optimized retail node.
+                                        </p>
+                                        <div className="flex flex-wrap justify-center xl:justify-start gap-5 mt-8">
+                                            <div className="flex items-center gap-3 bg-emerald-500/5 px-6 py-3 rounded-full border border-emerald-500/10 shadow-xl">
+                                                <div className="w-2 h-2 rounded-full bg-emerald-500 animate-ping"></div>
+                                                <span className="text-[9px] font-black text-emerald-400 uppercase tracking-[0.3em]">Public Node</span>
+                                            </div>
+                                            <div className="flex items-center gap-3 bg-red-500/5 px-6 py-3 rounded-full border border-red-500/10 shadow-xl">
+                                                <Shield size={16} className="text-red-500/60" />
+                                                <span className="text-[9px] font-black text-red-500 uppercase tracking-[0.3em]">Verified Operator</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </motion.div>
                         )}
                     </div>
                 </div>
